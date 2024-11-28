@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import "./App.css";
 
@@ -75,14 +75,29 @@ function App() {
   //   }
   // }
 
-  const handlePost = async () => {
-    try {
-      const response = await axios.post('https://twitterbot-hfmn.onrender.com/api/fetch-and-post-news');
-      console.log('Response:', response.data);
-    } catch (error) {
-      console.error('Error making the POST request:', error);
-    }
-  };
+    const handlePost = async () => {
+      try {
+        const response = await axios.post('https://twitterbot-hfmn.onrender.com/api/fetch-and-post-news');
+        console.log('Response:', response.data);
+      } catch (error) {
+        console.error('Error making the POST request:', error);
+      }
+    };
+  
+    useEffect(() => {
+      // Function to set the next post call at a random interval between 30 and 59 minutes
+      const scheduleNextPost = () => {
+        const randomTime = Math.floor(Math.random() * (59 - 30 + 1) + 30) * 60 * 1000;
+        setTimeout(() => {
+          handlePost();
+          scheduleNextPost(); // Schedule the next call
+        }, randomTime);
+      };
+  
+      // Start the initial post and scheduling
+      scheduleNextPost();
+    }, []);
+
 
   return (
     <div className="App">
@@ -98,7 +113,7 @@ function App() {
         {fetchError && <p style={{ color: "red" }}>{fetchError}</p>}
       </div> */}
 just for fun
-<button onClick={handlePost}>post</button>
+{/* <button onClick={handlePost}>post</button> */}
     </div>
   );
 }
